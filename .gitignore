@@ -1,0 +1,13 @@
+node_modules/
+.verification/
+artifacts/
+*.tmp
+*.log
+*.pdb
+*.exe
+!native/Reminder.exe
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db

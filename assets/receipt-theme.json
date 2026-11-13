@@ -1,0 +1,4 @@
+{
+  "light": {"paper":"#F6F1E7","ink":"#24211C","secondaryInk":"#625A4D","perforation":"#B7A68B","endedInk":"#2F6B53","errorInk":"#A33C35","attentionInk":"#8A581C","focusInk":"#2A5F84"},
+  "dark": {"paper":"#232622","ink":"#EEEBDD","secondaryInk":"#BDB9AA","perforation":"#5C6257","endedInk":"#A6C5AE","errorInk":"#F4A49D","attentionInk":"#E6BC7A","focusInk":"#89C1E6"}
+}

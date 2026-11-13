@@ -1,0 +1,6 @@
+- insert:
+    - id: dsh-finish-reminder
+      name: dsh-finish-reminder
+      config:
+        enabled: true
+        diagnosticsEnabled: false
