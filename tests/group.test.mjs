@@ -2,7 +2,7 @@
 import {GroupBridge} from '../src/host/group.mjs';import {fact,tick} from './fixtures.mjs';import {validateFact} from '../src/shared/contracts.mjs';
 function nativeFactory(children){return ()=>{const c=new EventEmitter();c.stdout=new EventEmitter();c.stderr=new EventEmitter();c.stdin=new EventEmitter();c.requests=[];c.killed=false;
   c.kill=()=>{c.killed=true;};c.stdin.write=line=>{const m=JSON.parse(line);c.requests.push(m);
-    let value={applied:true};if(m.type==='hello')value={version:'0.3.0',popup:true,badge:true,navigation:true};if(m.type==='registerDesktop')value={desktop:true};
+    let value={applied:true};if(m.type==='hello')value={version:'0.3.1',popup:true,badge:true,navigation:true};if(m.type==='registerDesktop')value={desktop:true};
     if(m.type==='bindWindow')value={bound:true,windowToken:'native-token'};
     queueMicrotask(()=>c.stdout.emit('data',Buffer.from(JSON.stringify({...m,type:'response',payload:{ok:true,value}})+'\n')));
   };children.push(c);return c;};}

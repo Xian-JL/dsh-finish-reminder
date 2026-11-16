@@ -24,6 +24,6 @@ Client的可信交互/返回事件携带事件之前已接收的终态票据。�
 
 ## 实际接口依据
 
-源码基线为安装内嵌0.2.2-rc.1，接缝包括 session/event、agent/inbox/claimed、ReactLoopAgent.whenIdle、profileContext.dir、connection.fetch.register、sessionProjections.snapshot、sessionPersistence.stat、workspace domain/changed、uiWorkspace.selection/openSession、sessions.binding及layout.panelInfo。
+源码基线为安装内嵌0.2.2-rc.1，并在0.3.1中重新核对0.2.2-rc.3。接缝包括 session/event、agent/inbox/claimed、ReactLoopAgent.whenIdle、profileContext.dir、connection.fetch.register、sessionProjections.snapshot、sessionPersistence.stat、workspace domain/changed、uiWorkspace.selection/openSession、sessions.binding及layout.panelInfo。
 
 项目内部 GroupBridge、ClientHub、Desktop 和 NavigationController 均为本插件实现，不是虚构的宿主服务。原生 Win32 约束参考 [Microsoft SetOverlayIcon](https://learn.microsoft.com/en-us/windows/win32/api/shobjidl_core/nf-shobjidl_core-itaskbarlist3-setoverlayicon)、[输入来源](https://learn.microsoft.com/en-us/windows/win32/api/winuser/ne-winuser-input_message_origin_id)和[任务栏工作区](https://learn.microsoft.com/en-us/windows/win32/api/shellapi/nf-shellapi-shappbarmessage)。

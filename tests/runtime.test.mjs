@@ -2,7 +2,7 @@ import {test} from 'node:test';import assert from 'node:assert/strict';
 import {Runtime} from '../src/host/runtime.mjs';import {CompletionStore,MemoryStorage} from '../src/core/store.mjs';
 import {fact,tick} from './fixtures.mjs';
 async function fixture(){const children=[],storage=new MemoryStorage(),store=new CompletionStore(storage),ctx={get:k=>k==='agents'?{get:()=>null}:k==='profileContext'?{name:'fixture',dir:'C:\\fixture'}:undefined};
-  const runtime=new Runtime(ctx,{store,bridge:hooks=>{const child={hooks,disposed:false,calls:[],async request(type,payload){this.calls.push({type,payload});return type==='hello'?{version:'0.3.0',popup:true,badge:false,navigation:false}:{};},async dispose(){this.disposed=true;}};children.push(child);return child;}});
+  const runtime=new Runtime(ctx,{store,bridge:hooks=>{const child={hooks,disposed:false,calls:[],async request(type,payload){this.calls.push({type,payload});return type==='hello'?{version:'0.3.1',popup:true,badge:false,navigation:false}:{};},async dispose(){this.disposed=true;}};children.push(child);return child;}});
   await runtime.start();await runtime.setEnabled(true);return {runtime,children,storage,store};
 }
 test('durable event drives native view, dismissal preserves count and click cannot fake navigation',async()=>{

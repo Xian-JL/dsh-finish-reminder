@@ -12,6 +12,8 @@ src、helper、assets、scripts、tests为当前工程。lib和native/Reminder.e
 
 npm run package默认输出dist，不覆盖本地已安装包的artifacts路径。可以通过DSH_REMINDER_PACKAGE_DIR显式改输出目录；除非明确准备升级并更新锁文件，不应覆盖已被Profile引用的旧tgz。
 
+安装助手在artifacts/installed保存以包SHA256命名的持久副本，再交给Desktop CLI，避免pnpm对同版本file依赖复用旧缓存。清理工作区时应保留当前Profile引用的这些副本；本机归档与安装缓存均不上传。
+
 ## 维护
 
 更改源码后重新构建lib和native，执行开发检查，再重新生成dist。源码哈希、生成文件哈希和安装包哈希分别记录，不能只改二进制或沿用旧收据。自动测试、离屏图与用户反馈分别记录，不把单项反馈编造成全部人工用例已执行。

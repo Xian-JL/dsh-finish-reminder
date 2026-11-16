@@ -1,4 +1,4 @@
-export const VERSION = '0.3.0';
+export const VERSION = '0.3.1';
 export const PROTOCOL = 1;
 export const FRONT_MS = 10000;
 export const MAX_TITLE = 160;

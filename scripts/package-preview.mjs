@@ -12,14 +12,14 @@ const target=resolve(root,'.verification','package-'+sha256.slice(0,16));
 assert.ok(target.startsWith(resolve(root,'.verification')+ '\\'));await mkdir(target,{recursive:true});
 await run('tar.exe',['-xzf',archive,'-C',target],{windowsHide:true});
 const extracted=join(target,'package'),pkg=JSON.parse(await readFile(join(extracted,'package.json')));
-assert.equal(pkg.version,'0.3.0');
+assert.equal(pkg.version,JSON.parse(await readFile(join(root,'package.json'))).version);
 const install=desktopInstall();
 const receipt=await run(join(install,'DeepSeek Harness.exe'),[join(root,'scripts/host-contract.cjs'),install],
   {windowsHide:true,env:{...process.env,ELECTRON_RUN_AS_NODE:'1',DSH_REMINDER_PLUGIN_ENTRY:join(extracted,'lib/index.js')},timeout:30000,maxBuffer:262144});
 const loaded=JSON.parse(receipt.stdout.trim());assert.equal(loaded.status,'PASS');
-const result={package:item.filename,version:pkg.version,sha256,releaseStatus:'USER_ACCEPTED',
-  structure:'PASS',extractedCordisContract:'PASS',fullDesktopAcceptance:'USER_REPORTED_ACCEPTED',sourceSpecBinding:JSON.parse(await readFile(join(extracted,'lib/build-binding.json')))};
+const result={package:item.filename,version:pkg.version,sha256,releaseStatus:'COMPATIBILITY_CHECKED',hostVersion:loaded.hostVersion,
+  structure:'PASS',extractedCordisContract:'PASS',baseUiAcceptance:'0.3.0 USER_ACCEPTED',fullDesktopAcceptance:'USER_PENDING_RC3',sourceSpecBinding:JSON.parse(await readFile(join(extracted,'lib/build-binding.json')))};
 await writeFile(join(artifacts,'preview-receipt.json'),JSON.stringify(result,null,2)+'\n');
 await writeFile(join(artifacts,'receipt-v'+pkg.version+'.json'),JSON.stringify(result,null,2)+'\n');
 await writeFile(archive+'.sha256',sha256+'  '+item.filename+'\n');
-console.log(JSON.stringify({package:item.filename,sha256,structure:'PASS',extractedCordisContract:'PASS',releaseStatus:'USER_ACCEPTED'}));
+console.log(JSON.stringify({package:item.filename,sha256,hostVersion:loaded.hostVersion,structure:'PASS',extractedCordisContract:'PASS',releaseStatus:'COMPATIBILITY_CHECKED'}));

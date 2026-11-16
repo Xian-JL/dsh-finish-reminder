@@ -1,7 +1,7 @@
 import { cleanTitle, safeInt } from '../shared/contracts.mjs';
 
 const reasonMap={completed:'ended',error:'error',aborted:'stopped',interrupted:'interrupted','max-tokens':'limited',blocked:'blocked'};
-/** Adapter for the inspected 0.2.2-rc.1 ReactLoopAgent. No transcript reads. */
+/** Adapter for the reviewed rc.1/rc.3 ReactLoopAgent contracts. No transcript reads. */
 export class EventAdapter {
   constructor({agents,identity,onFact,onError=()=>{},now=()=>Date.now(),monoNow=()=>performance.now(),timeoutMs=5000}) {
     Object.assign(this,{agents,identity,onFact,onError,now,monoNow,timeoutMs});

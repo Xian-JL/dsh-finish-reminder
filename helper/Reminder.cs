@@ -16,8 +16,8 @@ using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Threading;
 using Microsoft.Win32;
-[assembly: System.Reflection.AssemblyVersion("0.3.0.0")]
-[assembly: System.Reflection.AssemblyFileVersion("0.3.0.0")]
+[assembly: System.Reflection.AssemblyVersion("0.3.1.0")]
+[assembly: System.Reflection.AssemblyFileVersion("0.3.1.0")]
 
 namespace DshFinishReminder {
   static class Native {
@@ -111,7 +111,7 @@ namespace DshFinishReminder {
     }
     static object Execute(string type,Dictionary<string,object> p) {
       switch(type) {
-        case "hello": return new Dictionary<string,object>{{"version","0.3.0"},{"popup",true},{"badge",true},{"navigation",true},
+        case "hello": return new Dictionary<string,object>{{"version","0.3.1"},{"popup",true},{"badge",true},{"navigation",true},
           {"badgeBackend","window-icon-composition"},{"acceptance","UNVERIFIED"},{"foregroundBefore",Native.GetForegroundWindow().ToInt64()}};
         case "registerDesktop":return Desktop.Register(p);
         case "bindWindow":return Desktop.Bind(p);

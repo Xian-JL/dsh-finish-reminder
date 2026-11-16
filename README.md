@@ -2,7 +2,7 @@
 
 DeepSeek Harness Desktop 的 Windows 任务结束提醒插件。独立原生“任务回执”弹窗、准确返回原对话、待查看计数、通知中心与定时静默。
 
-当前版本：**0.3.0**。用户已反馈任务回执版使用正常；自动检查与人工反馈分别记录，不把反馈扩写为所有测试场景已执行。
+当前版本：**0.3.1**。修复DSH升级到0.2.2-rc.3后因版本声明被判不兼容的问题。用户已反馈0.3.0任务回执版使用正常；自动检查与人工反馈分别记录，不把反馈扩写为所有测试场景已执行。
 
 ![浅色任务回执](docs/images/receipt-light.png)
 
@@ -25,17 +25,17 @@ DeepSeek Harness Desktop 的 Windows 任务结束提醒插件。独立原生“�
 | 项目 | 目标 |
 | --- | --- |
 | 系统 | Windows 11 x64、底部任务栏 |
-| DSH Desktop | 0.2.2-rc.1 |
+| DSH Desktop | 0.2.2-rc.1、0.2.2-rc.3 |
 | 原生组件 | 系统 .NET Framework 4.8 WPF |
 
 固定/分组任务栏、窗口绑定、权限变化与异常退出行为以具体环境为准。窗口歧义或前置失败会保留未查看记录，不猜测其他目标。数字呈现范围为1—999，超限明确报错，内部计数保持精确。
 
 ## 安装
 
-[下载0.3.0安装包](dist/dsh-finish-reminder-0.3.0.tgz)，并核对[SHA256](dist/dsh-finish-reminder-0.3.0.tgz.sha256)。使用目标Desktop自带的DSH CLI：
+[下载0.3.1安装包](dist/dsh-finish-reminder-0.3.1.tgz)，并核对[SHA256](dist/dsh-finish-reminder-0.3.1.tgz.sha256)。使用目标Desktop自带的DSH CLI：
 
 ```powershell
-dsh plugin --profile desktop add https://raw.githubusercontent.com/Xian-JL/dsh-finish-reminder/main/dist/dsh-finish-reminder-0.3.0.tgz
+dsh plugin --profile desktop add https://raw.githubusercontent.com/Xian-JL/dsh-finish-reminder/main/dist/dsh-finish-reminder-0.3.1.tgz
 ```
 
 也可下载后以本地tgz路径安装。退出旧版实例后升级，再打开DSH，在“设置 → 对话结束提醒”查看通知中心、静默与运行状态。旧配置和记录继续使用，静默排程默认关闭。
@@ -62,10 +62,11 @@ verify执行JS及x64原生构建、业务/协议/静默/通知中心与回执测
 ```powershell
 $env:DSH_REMINDER_TEST_INSTALL = 'D:\Apps\DeepSeek Harness'
 npm run probe:host
+npm run probe:compatibility
 npm run package
 ```
 
-package默认输出dist，包含确切tgz、SHA256和版本/源码绑定；不覆盖可能被本地Profile引用的artifacts旧安装包。probe:host使用实际Cordis与合成服务，不登录、不发送模型任务。
+package默认输出dist，包含确切tgz、SHA256和版本/源码绑定；不覆盖可能被本地Profile引用的artifacts旧安装包。probe:host使用实际Cordis与合成服务，不登录、不发送模型任务。probe:compatibility使用当前安装内嵌的semver与Session检查发布包兼容声明、真实SDK事件及历史边界；只声明已核对的rc.1/rc.3，不自动放行其他RC或稳定版。详情见[宿主兼容性](docs/COMPATIBILITY.md)。
 
 lib和native包含预构建组件，helper/ReceiptTheme.g.cs由源码色板生成。修改源码后重新构建和检查产物，再生成dist。首次安装探索、宿主提取文件、Profile备份、沙箱和原始日志不属于公开仓库。
 

@@ -1,5 +1,6 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';import {execFile} from 'node:child_process';import {promisify} from 'node:util';import {fileURLToPath} from 'node:url';import {join} from 'node:path';
 const root=fileURLToPath(new URL('../',import.meta.url)),run=promisify(execFile);
+const currentPackage=JSON.parse(await readFile(join(root,'package.json'),'utf8'));
 const spec=await readFile(join(root,'spec.md'),'utf8');
 const cases=[...spec.matchAll(/^\| ((?:EVT|CNT|BADGE|POP|GEO|NAV|LIFE|DATA|PKG)-\d\d) \| ([^|]+) \|/gm)];
 const manual=await readFile(join(root,'MANUAL-ACCEPTANCE.md'),'utf8');
@@ -12,7 +13,8 @@ for(const [,id,scenario]of cases){const covered=partial.has(id)||id.startsWith('
 await mkdir(join(root,'artifacts'),{recursive:true});await writeFile(join(root,'artifacts/acceptance.csv'),'\ufeff'+csv.join('\r\n')+'\r\n');
 const tests=await run(process.execPath,['--test','--test-reporter=tap','tests/*.test.mjs'],{cwd:root,windowsHide:true,maxBuffer:524288});
 const rendered=JSON.parse(await readFile(join(root,'artifacts/receipt-ui/metrics.json'),'utf8'));
-const summary={date:'2026-11-13',version:'0.3.0',status:'IMPLEMENTED_UNVERIFIED',baseline:'0.2.0 retained; previous 0.1.0 USER_ACCEPTED',unitTests:{status:'PASS',count:Number(tests.stdout.match(/# tests (\d+)/)?.[1])},specCases:cases.length,newFeatureCases:receiptCases.length,offscreenRender:{cases:rendered.length,status:'PASS',scope:'invisible WPF development render and geometry; not desktop acceptance'},
+const summary={date:new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Shanghai'}).format(new Date()),version:currentPackage.version,status:'COMPATIBILITY_CHECKED',baseline:'0.3.0 UI USER_ACCEPTED',unitTests:{status:'PASS',count:Number(tests.stdout.match(/# tests (\d+)/)?.[1])},specCases:cases.length,newFeatureCases:receiptCases.length,offscreenRender:{cases:rendered.length,status:'PASS',scope:'invisible WPF development render and geometry; not desktop acceptance'},
   hostContract:JSON.parse(await readFile(join(root,'.verification/host-contract.json'))),
-  manualFeedback:'User accepted the task-receipt UI; this report does not manufacture per-case desktop evidence',fullDesktopAcceptance:'USER_REPORTED_ACCEPTED'};
+  compatibility:JSON.parse(await readFile(join(root,'.verification/host-compatibility.json'),'utf8')),
+  manualFeedback:'User accepted the 0.3.0 task-receipt UI; updated host checks do not manufacture per-case desktop evidence',fullDesktopAcceptance:'USER_PENDING_RC3'};
 await writeFile(join(root,'artifacts/verification-summary.json'),JSON.stringify(summary,null,2)+'\n');console.log(JSON.stringify(summary));

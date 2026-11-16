@@ -27,10 +27,10 @@ const native=await promisify(execFile)(join(framework,'csc.exe'),['/nologo','/ta
 if(native.stdout.trim())console.log(native.stdout.trim());
 await copyFile(join(root,'helper/Reminder.manifest'),join(root,'native/Reminder.exe.manifest'));
 const files=['spec.md','task-receipt-ui-v0.3.0-development.md','assets/receipt-theme.json','lib/index.js','lib/client.js','native/Reminder.exe'];
-const binding={packageVersion:JSON.parse(await readFile(join(root,'package.json'))).version,releaseStatus:'USER_ACCEPTED',files:{},sourceFiles:{}};
+const binding={packageVersion:JSON.parse(await readFile(join(root,'package.json'))).version,releaseStatus:'DEVELOPMENT_CHECKED',baseUiAcceptance:'0.3.0 USER_ACCEPTED',files:{},sourceFiles:{}};
 for(const f of files)binding.files[f]=createHash('sha256').update(await readFile(join(root,f))).digest('hex');
 async function sources(dir){const result=[];for(const item of await readdir(join(root,dir),{withFileTypes:true})){const path=dir+'/'+item.name;if(item.isDirectory())result.push(...await sources(path));else if(/\.(?:mjs|cjs|cs|manifest)$/.test(path))result.push(path);}return result;}
 for(const file of [...await sources('src'),...await sources('helper'),...await sources('scripts'),'package.json','package-lock.json','cordis.patch.yml'].sort())binding.sourceFiles[file]=createHash('sha256').update(await readFile(join(root,file))).digest('hex');
 binding.sourceDigest=createHash('sha256').update(JSON.stringify(binding.sourceFiles)).digest('hex');
 await writeFile(join(root,'lib/build-binding.json'),JSON.stringify(binding,null,2)+'\n');
-console.log('Built 0.3.0. Development checks and user feedback are recorded separately.');
+console.log('Built 0.3.1. Development checks and user feedback are recorded separately.');

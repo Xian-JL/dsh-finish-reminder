@@ -1,4 +1,4 @@
-const path=require('node:path');const {pathToFileURL}=require('node:url');const fs=require('node:fs/promises');const os=require('node:os');const assert=require('node:assert/strict');
+const path=require('node:path');const {pathToFileURL}=require('node:url');const fs=require('node:fs/promises');const os=require('node:os');const assert=require('node:assert/strict');const {createRequire}=require('node:module');
 async function main(){
   const sdk=path.join(process.argv[2],'resources/app.asar/dsh/node_modules/@deepseek-ai');
   const cordis=await import(pathToFileURL(path.join(sdk,'cordis/lib/index.js')));
@@ -9,7 +9,11 @@ async function main(){
     for(const [key,value]of Object.entries({agents:{get:()=>null},sessions:{},profileContext:{dir:fixture,name:'reminder-fixture'},connection:{fetch:{register:route=>{assert.ok(!routes.has(route.path));routes.set(route.path,route);return()=>routes.delete(route.path);}}}})){
       ctx.provide(key);ctx.set(key,value);
     }
-    const mod=await import(pathToFileURL(process.env.DSH_REMINDER_PLUGIN_ENTRY??path.join(__dirname,'../lib/index.js')));
+    const entry=process.env.DSH_REMINDER_PLUGIN_ENTRY??path.join(__dirname,'../lib/index.js');
+    const manifest=JSON.parse(await fs.readFile(path.join(path.dirname(entry),'../package.json'),'utf8'));
+    const requireSdk=createRequire(path.join(sdk,'dsh/package.json')),hostVersion=requireSdk('./package.json').version;
+    assert.equal(requireSdk('semver').satisfies(hostVersion,manifest.engines.dsh),true,'Distributed package must accept the installed host');
+    const mod=await import(pathToFileURL(entry));
     const handle=ctx.plugin(mod,{enabled:false});await handle;
     const statusRoute=routes.get('/api/dsh-finish-reminder/status');assert.ok(statusRoute);
     const status=await(await statusRoute.fetch(new Request('http://fixture/api/dsh-finish-reminder/status'))).json();
@@ -27,7 +31,7 @@ async function main(){
     }
     await handle.dispose();assert.equal(routes.size,0);await ctx.fiber.dispose();
     const out=path.join(__dirname,'../.verification');await fs.mkdir(out,{recursive:true});
-    const result={status:'PASS',scope:'actual packaged Cordis/config lifecycle; synthetic agents/profile/connection, not a running Desktop task',volatileUpdates:20,routeCleanup:true,modelToolsRegistered:false,desktopStarted:false};
+    const result={status:'PASS',hostVersion,pluginVersion:manifest.version,engineCompatible:true,scope:'actual packaged Cordis/config lifecycle; synthetic agents/profile/connection, not a running Desktop task',volatileUpdates:20,routeCleanup:true,modelToolsRegistered:false,desktopStarted:false};
     await fs.writeFile(path.join(out,'host-contract.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));
   }finally{await ctx.fiber.dispose().catch(()=>{});await fs.rm(fixture,{recursive:true,force:true});}
 }
